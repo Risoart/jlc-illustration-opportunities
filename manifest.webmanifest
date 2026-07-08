@@ -1,0 +1,14 @@
+{
+  "name": "JLC Illustration Opportunities",
+  "short_name": "JLC Opps",
+  "description": "Clients, grants and opportunities for illustrators — all in one place.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#fbf7f0",
+  "theme_color": "#e8683c",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>JLC Illustration Opportunities</title>
+<meta name="description" content="Clients, grants and opportunities for illustrators — all in one place.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#e8683c">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="JLC Opps">
+<style>
+  :root{
+    --bg:#fbf7f0; --card:#ffffff; --ink:#2b2320; --muted:#8a7f76;
+    --line:#ece4d8; --brand:#e8683c; --brand-dk:#c9522b;
+    --green:#3f9e6d; --blue:#3d7bd6; --amber:#e0a13c; --purple:#8b6bc9;
+    --shadow:0 1px 3px rgba(60,40,20,.08),0 8px 24px rgba(60,40,20,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.5}
+  a{color:inherit}
+  header.top{padding:22px 28px;display:flex;align-items:center;gap:14px;
+    border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fdfaf4)}
+  .logo{width:40px;height:40px;border-radius:11px;background:var(--brand);
+    display:grid;place-items:center;color:#fff;font-size:22px;box-shadow:var(--shadow)}
+  .title h1{margin:0;font-size:20px;letter-spacing:-.3px}
+  .title p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+  .wrap{max-width:1120px;margin:0 auto;padding:24px 20px 60px}
+  .tabs{display:flex;gap:6px;margin:18px 0 22px;flex-wrap:wrap}
+  .tab{padding:8px 15px;border-radius:999px;border:1px solid var(--line);
+    background:#fff;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted)}
+  .tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+  select,input[type=text]{padding:9px 12px;border:1px solid var(--line);border-radius:10px;
+    background:#fff;font-size:13.5px;color:var(--ink);font-family:inherit}
+  input[type=text]{flex:1;min-width:200px}
+  .count{font-size:12.5px;color:var(--muted);margin-left:auto}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px}
+  .card h3{margin:0;font-size:15.5px;letter-spacing:-.2px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;
+    background:#f3ece0;color:#7c6f62}
+  .chip.market{background:#eaf3ee;color:var(--green)}
+  .chip.community{background:#eef2fb;color:var(--blue)}
+  .chip.direct{background:#f6efe4;color:var(--amber)}
+  .chip.contest{background:#f2edf9;color:var(--purple)}
+  .chip.grant{background:#eaf3ee;color:var(--green)}
+  .chip.fellowship{background:#eef2fb;color:var(--blue)}
+  .chip.residency{background:#f2edf9;color:var(--purple)}
+  .chip.emergency{background:#fbecea;color:var(--brand-dk)}
+  .chip.listing{background:#f6efe4;color:var(--amber)}
+  .desc{font-size:13px;color:#5f564e;margin:0}
+  .meta{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+  .meta b{color:var(--ink);font-weight:700}
+  .card .actions{display:flex;gap:8px;margin-top:auto;padding-top:4px}
+  .btn{flex:1;text-align:center;padding:9px 10px;border-radius:10px;font-size:13px;
+    font-weight:700;cursor:pointer;border:1px solid var(--line);background:#fff;text-decoration:none}
+  .btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .btn.primary:hover{background:var(--brand-dk)}
+  .btn.saved{background:var(--green);color:#fff;border-color:var(--green)}
+  .empty{text-align:center;color:var(--muted);padding:60px 20px;font-size:14px}
+  /* pipeline */
+  .pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .col{background:#f6f0e6;border:1px solid var(--line);border-radius:14px;padding:12px;min-height:120px}
+  .col h4{margin:0 0 10px;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  .pcard{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:9px;font-size:13px;box-shadow:var(--shadow)}
+  .pcard .n{font-weight:700;font-size:13px}
+  .pcard .s{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .pcard .row{display:flex;gap:6px;margin-top:8px}
+  .mini{font-size:11px;padding:4px 7px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600}
+  .mini:hover{background:#f3ece0}
+  /* pitch */
+  .pitchgrid{display:grid;grid-template-columns:340px 1fr;gap:18px}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+  .panel label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:12px 0 5px;text-transform:uppercase;letter-spacing:.4px}
+  .panel input,.panel select,.panel textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:13.5px}
+  textarea.out{width:100%;min-height:340px;border:1px solid var(--line);border-radius:12px;padding:16px;font-family:inherit;font-size:14px;line-height:1.65;resize:vertical}
+  .note{font-size:12px;color:var(--muted);background:#f6f0e6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:16px}
+  @media(max-width:760px){.pitchgrid{grid-template-columns:1fr}.pipe{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">✎</div>
+  <div class="title">
+    <h1>JLC Illustration Opportunities</h1>
+    <p>Clients, grants &amp; opportunities for illustrators — all in one place. <em>Prototype</em></p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tabs">
+    <div class="tab active" data-view="leads">Client Work</div>
+    <div class="tab" data-view="grants">Grants &amp; Funding</div>
+    <div class="tab" data-view="pipeline">My Pipeline</div>
+    <div class="tab" data-view="pitch">Pitch Drafter</div>
+  </div>
+
+  <!-- OPPORTUNITIES -->
+  <section id="leads">
+    <div class="note">
+      Each card links straight to a <b>live, filtered feed</b> of current children's-book illustration gigs on that platform.
+      Click <b>View live gigs</b> to open real postings, or <b>Save</b> to track it in your pipeline.
+    </div>
+    <div class="toolbar">
+      <select id="typeFilter">
+        <option value="all">All source types</option>
+        <option value="market">Freelance marketplaces</option>
+        <option value="community">Communities & niche boards</option>
+        <option value="direct">Publishers & direct clients</option>
+        <option value="contest">Contests, awards & exposure</option>
+      </select>
+      <input type="text" id="search" placeholder="Search sources…">
+      <span class="count" id="count"></span>
+    </div>
+    <div class="grid" id="cards"></div>
+  </section>
+
+  <!-- GRANTS -->
+  <section id="grants" style="display:none">
+    <div class="note">
+      Grants, fellowships, residencies and awards open to <b>illustrators and visual artists broadly</b> — not just children's books.
+      Deadlines shift each cycle, so always confirm dates on the source page. Click <b>Details ↗</b> for the live application page.
+    </div>
+    <div class="toolbar">
+      <select id="grantFilter">
+        <option value="all">All funding types</option>
+        <option value="grant">Project grants</option>
+        <option value="fellowship">Fellowships</option>
+        <option value="residency">Residencies</option>
+        <option value="emergency">Emergency relief</option>
+        <option value="listing">Opportunity listings</option>
+      </select>
+      <input type="text" id="grantSearch" placeholder="Search grants…">
+      <span class="count" id="grantCount"></span>
+    </div>
+    <div class="grid" id="grantCards"></div>
+  </section>
+
+  <!-- PIPELINE -->
+  <section id="pipeline" style="display:none">
+    <div class="note">Drag-free simple tracker. Move saved leads across stages as conversations progress. Saved to this browser.</div>
+    <div class="pipe">
+      <div class="col" data-stage="new"><h4>Saved</h4><div class="colbody" data-stage="new"></div></div>
+      <div class="col" data-stage="pitched"><h4>Pitched</h4><div class="colbody" data-stage="pitched"></div></div>
+      <div class="col" data-stage="talking"><h4>In talks</h4><div class="colbody" data-stage="talking"></div></div>
+      <div class="col" data-stage="won"><h4>Won</h4><div class="colbody" data-stage="won"></div></div>
+    </div>
+  </section>
+
+  <!-- PITCH -->
+  <section id="pitch" style="display:none">
+    <div class="pitchgrid">
+      <div class="panel">
+        <label>Your name</label><input id="p_name" value="Riso">
+        <label>Portfolio link</label><input id="p_folio" placeholder="yourportfolio.com">
+        <label>Client / author name</label><input id="p_client" placeholder="e.g. Sarah">
+        <label>Project (what they need)</label><input id="p_proj" placeholder="a 24-page picture book about a shy dragon">
+        <label>Your style in a few words</label><input id="p_style" value="warm, whimsical watercolor with soft linework">
+        <label>Tone</label>
+        <select id="p_tone">
+          <option>Warm & friendly</option>
+          <option>Polished & professional</option>
+          <option>Short & punchy</option>
+        </select>
+        <button class="btn primary" style="margin-top:16px" onclick="genPitch()">Generate pitch</button>
+      </div>
+      <div>
+        <textarea class="out" id="pitchOut"></textarea>
+        <button class="btn" style="margin-top:10px;max-width:180px" onclick="copyPitch()">Copy to clipboard</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const LEADS = [
+  {t:"Upwork — Children's Book Illustrator jobs", type:"market",
+   d:"Hundreds of open postings from indie authors and small presses. Filter by budget and hourly vs fixed. High volume, competitive.",
+   meta:[["Volume","800+ live"],["Pay","$25–68/hr"]],
+   url:"https://www.upwork.com/freelance-jobs/childrens-book-illustrator/"},
+  {t:"Reedsy — Illustration jobs", type:"market",
+   d:"Curated marketplace. Approved illustrators get matched to serious, vetted clients — fewer but higher-quality leads.",
+   meta:[["Quality","Vetted"],["Setup","Apply once"]],
+   url:"https://reedsy.com/freelancer/childrens-book-illustrator-jobs/"},
+  {t:"Freelancer.com — Children's book projects", type:"market",
+   d:"Ongoing project postings, contest-style and fixed-bid. Global client base.",
+   meta:[["Volume","High"],["Model","Bids"]],
+   url:"https://www.freelancer.com/jobs/children-book-illustration"},
+  {t:"PeoplePerHour — Illustration jobs", type:"market",
+   d:"UK-heavy freelance board with steady children's-book listings and 'send a proposal' flow.",
+   meta:[["Region","UK/EU"],["Model","Proposals"]],
+   url:"https://www.peopleperhour.com/freelance-children-s-book-illustration-jobs"},
+  {t:"Twine — Children's book illustrator jobs", type:"market",
+   d:"Creative-focused marketplace. Clients post briefs; you apply with your reel/portfolio.",
+   meta:[["Focus","Creatives"],["Model","Apply"]],
+   url:"https://www.twine.net/jobs/childrens-book-illustrators"},
+  {t:"Fiverr Pro — Children's book illustration", type:"market",
+   d:"Set up productized packages (per-spread, per-character). Good for inbound once your gigs rank.",
+   meta:[["Model","Packages"],["Inbound","Yes"]],
+   url:"https://www.fiverr.com/hire/childrens-book-illustration"},
+  {t:"Indeed — Children's book illustrator", type:"direct",
+   d:"Mix of studio staff roles and freelance contracts from publishers and content companies.",
+   meta:[["Type","Jobs+freelance"],["Alerts","Set email"]],
+   url:"https://www.indeed.com/q-children-book-illustrator-jobs.html"},
+  {t:"LinkedIn — Children's book illustrator", type:"direct",
+   d:"3,000+ US listings. Best for reaching publishers, agencies and art directors directly.",
+   meta:[["Volume","3,000+"],["Best for","Publishers"]],
+   url:"https://www.linkedin.com/jobs/children-book-illustrator-jobs"},
+  {t:"ZipRecruiter — Freelance illustrator", type:"direct",
+   d:"Aggregates listings across the web; strong salary/rate data by city.",
+   meta:[["Pay","$24–63/hr"],["Alerts","Yes"]],
+   url:"https://www.ziprecruiter.com/Jobs/Freelance-Children-S-Book-Illustrator"},
+  {t:"Reddit — 'children's book illustrator' search", type:"community",
+   d:"Self-publishing authors post commissions in r/HungryArtists, r/selfpublish, r/childrensbooks. Cold but real, direct-to-client.",
+   meta:[["Cost","Free"],["Client","Indie authors"]],
+   url:"https://www.reddit.com/search/?q=children%27s%20book%20illustrator&sort=new"},
+  {t:"SCBWI — Society of Children's Book Writers & Illustrators", type:"community",
+   d:"The core professional community. Regional events, illustrator galleries, and author connections that turn into paid work.",
+   meta:[["Type","Membership"],["Value","Network"]],
+   url:"https://www.scbwi.org/"},
+  {t:"SCBWI — Featured Illustrator & portfolio showcases", type:"contest",
+   d:"Get your art in front of 30,000+ followers and industry pros. Exposure that attracts inbound briefs.",
+   meta:[["Reach","30k+"],["Type","Exposure"]],
+   url:"https://www.scbwi.org/featured-illustrator"},
+  {t:"Bologna Children's Book Fair — Illustrators Exhibition", type:"contest",
+   d:"The biggest global kidlit event. Illustrators Annual + exhibition puts you in front of publishers worldwide.",
+   meta:[["Scope","Global"],["Type","Exhibition"]],
+   url:"https://www.scbwi.org/"},
+];
+
+const GRANTS = [
+  {t:"Creative Capital Award", type:"grant",
+   d:"Unrestricted project grants up to $50,000 plus professional-development support for original, groundbreaking new work across disciplines — illustrators welcome.",
+   meta:[["Award","up to $50k"],["Cycle","Annual open call"]],
+   url:"https://creative-capital.org/creative-capital-award/"},
+  {t:"Pollock-Krasner Foundation Grant", type:"grant",
+   d:"Grants up to $50,000 for professional visual artists working on paper — including printmakers and illustrators — with demonstrated financial or project need.",
+   meta:[["Award","up to $50k"],["Basis","Need + merit"]],
+   url:"https://pkf.org/apply/"},
+  {t:"Harpo Foundation — Grants for Visual Artists", type:"grant",
+   d:"Awards up to $10,000 for under-recognized visual artists. Supports development of new work.",
+   meta:[["Award","up to $10k"],["Deadline","~late April"]],
+   url:"https://www.harpofoundation.org/grants/grants-for-visual-artists/"},
+  {t:"NEA — Grants for Arts Projects", type:"grant",
+   d:"Federal project funding across artistic disciplines including design and illustration, typically for organizations and partnerships.",
+   meta:[["Funder","Federal"],["Scope","Projects"]],
+   url:"https://www.arts.gov/grants/grants-for-arts-projects"},
+  {t:"Jerome Foundation — Emerging Artist support", type:"fellowship",
+   d:"Fellowships and grants for early-career artists in MN and NYC. Strong track record supporting illustrators and comics artists.",
+   meta:[["Stage","Emerging"],["Region","MN / NYC"]],
+   url:"https://www.jeromefdn.org/"},
+  {t:"Studio Museum in Harlem — Artist-in-Residence", type:"residency",
+   d:"Annual residency for three visual artists in any media, with studio space, stipend, professional development, and a culminating exhibition.",
+   meta:[["Spots","3 / year"],["Includes","Studio + stipend"]],
+   url:"https://www.studiomuseum.org/artists-in-residence"},
+  {t:"ISCP — International Studio & Curatorial Program", type:"residency",
+   d:"Brooklyn-based residency accepting global applications; studio space and a professional network across visual arts.",
+   meta:[["Location","Brooklyn"],["Reach","Global"]],
+   url:"https://iscp-nyc.org/"},
+  {t:"Rauschenberg Medical Emergency Grants", type:"emergency",
+   d:"One-time grants up to $5,000 for recent unexpected medical, dental, or mental-health emergencies for visual & digital artists in need.",
+   meta:[["Award","up to $5k"],["For","Medical need"]],
+   url:"https://www.nyfa.org/awards-grants/rauschenberg-medical-emergency-grants/"},
+  {t:"Gottlieb Emergency Grant", type:"emergency",
+   d:"Financial assistance for painters, printmakers and sculptors hit by an unforeseen catastrophe. Typical award $5,000 (up to $15,000).",
+   meta:[["Award","$5k–15k"],["For","Catastrophe"]],
+   url:"https://www.gottliebfoundation.org/emergency-grant"},
+  {t:"Artwork Archive — 2026 Grants & Opportunities guide", type:"listing",
+   d:"Continuously updated master list of artist grants, residencies and open calls, filterable by type. Great for spotting new deadlines.",
+   meta:[["Type","Aggregator"],["Update","Ongoing"]],
+   url:"https://www.artworkarchive.com/call-for-entry/complete-guide-to-2026-artist-grants-opportunities"},
+  {t:"Creative Capital — Artist Opportunities list", type:"listing",
+   d:"Free, regularly updated roundup of grants, residencies, awards and calls open to artists nationwide.",
+   meta:[["Type","Aggregator"],["Cost","Free"]],
+   url:"https://creative-capital.org/artist-resources/artist-opportunities/"},
+  {t:"Colossal — Monthly Opportunities", type:"listing",
+   d:"Monthly editorial roundup of open calls, residencies and grants for artists and designers, including illustration-friendly picks.",
+   meta:[["Type","Monthly"],["Focus","Art + design"]],
+   url:"https://www.thisiscolossal.com/tag/opportunities/"},
+  {t:"Artist Communities Alliance — Funding & Fellowships", type:"listing",
+   d:"Directory of residencies and fellowship funding, with fee-waiver and stipend info to plan applications.",
+   meta:[["Type","Directory"],["Focus","Residencies"]],
+   url:"https://artistcommunities.org/funding-fees-fellowships"},
+];
+
+const KEY="jlc_pipeline_v1";
+const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}};
+const save=(o)=>localStorage.setItem(KEY,JSON.stringify(o));
+let pipeline=load();
+
+const labels={market:"Marketplace",community:"Community",direct:"Publisher / direct",contest:"Exposure",
+  grant:"Project grant",fellowship:"Fellowship",residency:"Residency",emergency:"Emergency relief",listing:"Opportunity list"};
+
+function renderCards(){
+  const type=document.getElementById('typeFilter').value;
+  const q=document.getElementById('search').value.toLowerCase();
+  const box=document.getElementById('cards');
+  const list=LEADS.filter(l=>(type==='all'||l.type===type)&&(l.t.toLowerCase().includes(q)||l.d.toLowerCase().includes(q)));
+  document.getElementById('count').textContent=list.length+" sources";
+  box.innerHTML=list.map(l=>{
+    const key="L"+LEADS.indexOf(l);
+    const isSaved=!!pipeline[key];
+    return `<div class="card">
+      <div class="chips"><span class="chip ${l.type}">${labels[l.type]}</span></div>
+      <h3>${l.t}</h3>
+      <p class="desc">${l.d}</p>
+      <div class="meta">${l.meta.map(m=>`<span><b>${m[1]}</b> ${m[0]}</span>`).join('')}</div>
+      <div class="actions">
+        <a class="btn primary" href="${l.url}" target="_blank" rel="noopener">View live gigs ↗</a>
+        <button class="btn ${isSaved?'saved':''}" onclick="toggleSave('${key}','${esc(l.t)}','${l.url}')">${isSaved?'✓ Saved':'Save'}</button>
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty">No sources match that filter.</div>';
+}
+
+function renderGrants(){
+  const type=document.getElementById('grantFilter').value;
+  const q=document.getElementById('grantSearch').value.toLowerCase();
+  const box=document.getElementById('grantCards');
+  const list=GRANTS.filter(g=>(type==='all'||g.type===type)&&(g.t.toLowerCase().includes(q)||g.d.toLowerCase().includes(q)));
+  document.getElementById('grantCount').textContent=list.length+" opportunities";
+  box.innerHTML=list.map(g=>{
+    const key="G"+GRANTS.indexOf(g);
+    const isSaved=!!pipeline[key];
+    return `<div class="card">
+      <div class="chips"><span class="chip ${g.type}">${labels[g.type]}</span></div>
+      <h3>${g.t}</h3>
+      <p class="desc">${g.d}</p>
+      <div class="meta">${g.meta.map(m=>`<span><b>${m[1]}</b> ${m[0]}</span>`).join('')}</div>
+      <div class="actions">
+        <a class="btn primary" href="${g.url}" target="_blank" rel="noopener">Details ↗</a>
+        <button class="btn ${isSaved?'saved':''}" onclick="toggleSave('${key}','${esc(g.t)}','${g.url}')">${isSaved?'✓ Saved':'Save'}</button>
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty">No opportunities match that filter.</div>';
+}
+const esc=s=>s.replace(/'/g,"\\'");
+
+function toggleSave(key,title,url){
+  if(pipeline[key]){delete pipeline[key];}
+  else{pipeline[key]={stage:'new',t:title,url:url};}
+  save(pipeline);renderCards();renderGrants();renderPipe();
+}
+
+function renderPipe(){
+  const stages=['new','pitched','talking','won'];
+  const order={new:0,pitched:1,talking:2,won:3};
+  document.querySelectorAll('.colbody').forEach(c=>c.innerHTML='');
+  Object.entries(pipeline).forEach(([id,v])=>{
+    const body=document.querySelector(`.colbody[data-stage="${v.stage}"]`);
+    if(!body)return;
+    const idx=order[v.stage];
+    const back=idx>0?`<button class="mini" onclick="move('${id}','${stages[idx-1]}')">←</button>`:'';
+    const fwd=idx<3?`<button class="mini" onclick="move('${id}','${stages[idx+1]}')">→</button>`:'';
+    body.innerHTML+=`<div class="pcard">
+      <div class="n">${v.t}</div>
+      <div class="row">${back}${fwd}
+        <a class="mini" href="${v.url}" target="_blank" rel="noopener">Open</a>
+        <button class="mini" onclick="toggleSave('${id}')">Remove</button>
+      </div></div>`;
+  });
+  stages.forEach(s=>{
+    const body=document.querySelector(`.colbody[data-stage="${s}"]`);
+    if(body && !body.innerHTML) body.innerHTML='<div style="font-size:12px;color:var(--muted)">—</div>';
+  });
+}
+function move(id,stage){if(pipeline[id]){pipeline[id].stage=stage;save(pipeline);renderPipe();}}
+
+// tabs
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  ['leads','grants','pipeline','pitch'].forEach(v=>document.getElementById(v).style.display='none');
+  document.getElementById(t.dataset.view).style.display='';
+  if(t.dataset.view==='pipeline')renderPipe();
+  if(t.dataset.view==='grants')renderGrants();
+});
+document.getElementById('typeFilter').onchange=renderCards;
+document.getElementById('search').oninput=renderCards;
+document.getElementById('grantFilter').onchange=renderGrants;
+document.getElementById('grantSearch').oninput=renderGrants;
+
+// pitch
+function genPitch(){
+  const n=v('p_name'),f=v('p_folio'),c=v('p_client')||'there',pr=v('p_proj')||'your children\'s book',st=v('p_style'),tone=v('p_tone');
+  const folio=f?`\n\nYou can see my portfolio here: ${f}`:'';
+  let body;
+  if(tone==='Short & punchy'){
+    body=`Hi ${c},\n\nI'm ${n}, a children's-book illustrator. I'd love to illustrate ${pr}. My style is ${st} — a natural fit for picture books that kids and parents come back to.${folio}\n\nHappy to share samples or a quick sketch for your story. When's a good time to chat?\n\nBest,\n${n}`;
+  }else if(tone==='Polished & professional'){
+    body=`Dear ${c},\n\nMy name is ${n} and I specialize in children's-book illustration. I'm reaching out about ${pr}, which sounds like a wonderful project to bring to life.\n\nMy work is ${st}, and I focus on consistent characters, clear page-to-page storytelling, and print-ready delivery. I'd be glad to discuss your vision, timeline, and budget, and to provide references from past picture-book projects.${folio}\n\nThank you for your time — I'd welcome the chance to collaborate.\n\nWarm regards,\n${n}`;
+  }else{
+    body=`Hi ${c}! 👋\n\nI'm ${n}, a children's-book illustrator, and I'd genuinely love to work on ${pr}. My style is ${st}, which tends to suit stories that feel cozy and full of character.\n\nI'd bring consistent characters, playful page layouts, and files ready for print. I'd love to hear more about your story, your timeline, and what you're picturing.${folio}\n\nLooking forward to hearing from you!\n${n}`;
+  }
+  document.getElementById('pitchOut').value=body;
+}
+const v=id=>document.getElementById(id).value.trim();
+function copyPitch(){const o=document.getElementById('pitchOut');o.select();document.execCommand('copy');}
+
+renderCards();renderGrants();genPitch();
+
+// Register service worker for offline / installable app
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+}
+</script>
+</body>
+</html>
