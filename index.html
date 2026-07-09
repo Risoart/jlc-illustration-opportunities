@@ -106,6 +106,23 @@
   .pager button:hover:not(:disabled){background:#f3ece0}
   .pager button:disabled{opacity:.4;cursor:default}
   .pager .pinfo{font-size:12.5px;color:var(--muted);min-width:96px;text-align:center}
+  /* money + outreach */
+  .subtab2{padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:700;color:var(--muted)}
+  .subtab2.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:#f3ece0;color:#7c6f62}
+  .badge.due{background:#fbecea;color:var(--brand-dk)}
+  .badge.ok{background:#eaf3ee;color:var(--green)}
+  .badge.paid{background:#eaf3ee;color:var(--green)}
+  .badge.unpaid{background:#f6efe4;color:var(--amber)}
+  .crmcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:10px;box-shadow:var(--shadow)}
+  .crmcard .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .crmcard .nm{font-weight:700;font-size:14px}
+  .crmcard .sub{font-size:12px;color:var(--muted);margin-top:2px}
+  .crmcard .foot{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+  .inv-preview h2{margin:0 0 2px;font-size:21px;letter-spacing:-.3px}
+  .inv-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .inv-total{display:flex;justify-content:space-between;padding:10px 0 0;font-weight:700;font-size:16px}
+  .bignum{font-size:26px;font-weight:800;letter-spacing:-.5px}
   @media(max-width:760px){.pitchgrid{grid-template-columns:1fr}.pipe{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -123,6 +140,8 @@
     <div class="tab active" data-view="leads">Client Work</div>
     <div class="tab" data-view="grants">Grants &amp; Funding</div>
     <div class="tab" data-view="pipeline">My Pipeline</div>
+    <div class="tab" data-view="outreach">Outreach</div>
+    <div class="tab" data-view="money">Rates &amp; Invoices</div>
     <div class="tab" data-view="pitch">Pitch &amp; Contracts</div>
   </div>
 
@@ -181,6 +200,111 @@
       <div class="col" data-stage="pitched"><h4>Pitched</h4><div class="colbody" data-stage="pitched"></div></div>
       <div class="col" data-stage="talking"><h4>In talks</h4><div class="colbody" data-stage="talking"></div></div>
       <div class="col" data-stage="won"><h4>Won</h4><div class="colbody" data-stage="won"></div></div>
+    </div>
+  </section>
+
+  <!-- OUTREACH -->
+  <section id="outreach" style="display:none">
+    <div class="note">
+      Consistency wins work — 69% of illustrators say marketing regularly is their hardest task, and jobs are often lost simply by <b>not following up</b>.
+      Log who you're pitching, set a cadence, and the app flags who's due. Aim for monthly touches (4×/year minimum).
+    </div>
+    <div class="pitchgrid">
+      <div class="panel">
+        <label>Name</label><input id="o_name" placeholder="Art director / editor / studio">
+        <label>Company / role</label><input id="o_co" placeholder="e.g. Art Director, Penguin">
+        <label>Email or handle</label><input id="o_contact" placeholder="email or @handle">
+        <label>Status</label>
+        <select id="o_status">
+          <option>To contact</option><option>Contacted</option><option>Following up</option>
+          <option>Replied</option><option>Won</option><option>Passed</option>
+        </select>
+        <label>Follow-up cadence</label>
+        <select id="o_cadence">
+          <option value="30">Monthly</option>
+          <option value="90">Quarterly</option>
+          <option value="14">Every 2 weeks</option>
+          <option value="0">No reminder</option>
+        </select>
+        <label>Notes</label><input id="o_notes" placeholder="what you pitched, their vibe…">
+        <input type="hidden" id="o_editid">
+        <button class="btn primary" style="margin-top:14px" onclick="saveContact()">Save contact</button>
+        <div id="oStatus" class="status"></div>
+      </div>
+      <div>
+        <div id="oSummary" class="updated"></div>
+        <div id="oList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RATES & INVOICES -->
+  <section id="money" style="display:none">
+    <div class="subtabs">
+      <div class="subtab2 active" data-sub2="ratePanel">Rate calculator</div>
+      <div class="subtab2" data-sub2="invoicePanel">Invoice</div>
+    </div>
+
+    <!-- Rate calculator -->
+    <div id="ratePanel">
+      <div class="pitchgrid">
+        <div class="panel">
+          <label>Your day rate ($)</label><input id="r_day" type="number" value="800">
+          <label>Days of work</label><input id="r_days" type="number" value="3">
+          <label>Licensing / usage</label>
+          <select id="r_use">
+            <option value="0">None — personal use only</option>
+            <option value="50">Small / local business (+50%)</option>
+            <option value="100" selected>Editorial — magazine/online (+100%)</option>
+            <option value="250">Regional / commercial (+250%)</option>
+            <option value="500">National / global brand (+500%)</option>
+          </select>
+          <label>Rush job?</label>
+          <select id="r_rush"><option value="0">No</option><option value="25">Yes (+25%)</option></select>
+          <button class="btn primary" style="margin-top:14px" onclick="calcRate()">Calculate</button>
+          <div class="disc">Guide rates: editorial spot <b>$150–600</b> · commercial/advertising <b>$1,000–10,000+</b> · mid-career day rate <b>$600–1,200</b>. Always quote creation and licensing as separate line items.</div>
+        </div>
+        <div>
+          <div id="rateOut" class="panel"><span style="color:var(--muted);font-size:13px">Enter your numbers and hit Calculate.</span></div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" onclick="useInInvoice()">Use in invoice →</button>
+            <button class="btn" onclick="useInContract()">Use in contract →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoice -->
+    <div id="invoicePanel" style="display:none">
+      <div class="pitchgrid">
+        <div class="panel">
+          <label>From (you / business)</label><input id="i_from" value="Riso">
+          <label>Your email</label><input id="i_frommail" placeholder="you@email.com">
+          <label>Bill to (client)</label><input id="i_to" placeholder="Client / company">
+          <label>Client email / address</label><input id="i_tomail">
+          <label>Invoice #</label><input id="i_num">
+          <label>Issue date</label><input id="i_date" type="date">
+          <label>Due date</label><input id="i_due" type="date">
+          <label>Creation fee — description</label><input id="i_l1d" value="Illustration — creation fee">
+          <label>Creation fee — amount ($)</label><input id="i_l1a" type="number">
+          <label>Licensing fee — description</label><input id="i_l2d" value="Usage license">
+          <label>Licensing fee — amount ($)</label><input id="i_l2a" type="number">
+          <label>Extra line — description (optional)</label><input id="i_l3d">
+          <label>Extra line — amount ($)</label><input id="i_l3a" type="number">
+          <label>Deposit already paid ($)</label><input id="i_dep" type="number" value="0">
+          <label>Payment instructions</label><input id="i_pay" placeholder="Pay via bank transfer / PayPal to…">
+          <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+            <button class="btn primary" onclick="previewInvoice()">Preview</button>
+            <button class="btn" onclick="printInvoice()">Print / Save PDF</button>
+            <button class="btn" onclick="saveInvoice()">Save to tracker</button>
+          </div>
+          <div id="iStatus" class="status"></div>
+        </div>
+        <div>
+          <div id="invoiceOut" class="panel" style="min-height:180px"><span style="color:var(--muted);font-size:13px">Fill the form and hit Preview.</span></div>
+          <div id="invTracker" style="margin-top:16px"></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -694,10 +818,20 @@ function move(id,stage){if(pipeline[id]){pipeline[id].stage=stage;save(pipeline)
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
-  ['leads','grants','pipeline','pitch'].forEach(v=>document.getElementById(v).style.display='none');
+  ['leads','grants','pipeline','outreach','money','pitch'].forEach(v=>document.getElementById(v).style.display='none');
   document.getElementById(t.dataset.view).style.display='';
   if(t.dataset.view==='pipeline')renderPipe();
   if(t.dataset.view==='grants')renderGrants();
+  if(t.dataset.view==='outreach')renderContacts();
+  if(t.dataset.view==='money'){setInvoiceDefaults();renderInvTracker();}
+});
+
+// Rates & Invoices inner sub-tabs
+document.querySelectorAll('.subtab2').forEach(s=>s.onclick=()=>{
+  document.querySelectorAll('.subtab2').forEach(x=>x.classList.remove('active'));
+  s.classList.add('active');
+  document.getElementById('ratePanel').style.display   = s.dataset.sub2==='ratePanel'?'':'none';
+  document.getElementById('invoicePanel').style.display= s.dataset.sub2==='invoicePanel'?'':'none';
 });
 document.getElementById('typeFilter').onchange=()=>{leadPage=0;renderCards();};
 document.getElementById('search').oninput=()=>{leadPage=0;renderCards();};
@@ -821,7 +955,231 @@ function downloadContract(){
   document.getElementById('ai_model').value=localStorage.getItem('jlc_model')||'claude-sonnet-5';
 })();
 
-renderCards();renderGrants();genPitch();updateRefreshLabels();
+// ---- Rates & Invoices ----
+const money=n=>'$'+Math.round(+n||0).toLocaleString();
+let _rate={creation:0,licensing:0,total:0};
+
+function calcRate(){
+  const day=+document.getElementById('r_day').value||0;
+  const days=+document.getElementById('r_days').value||0;
+  const use=+document.getElementById('r_use').value||0;
+  const rush=+document.getElementById('r_rush').value||0;
+  let creation=day*days;
+  if(rush)creation*=(1+rush/100);
+  const licensing=creation*(use/100);
+  const total=creation+licensing;
+  _rate={creation,licensing,total};
+  document.getElementById('rateOut').innerHTML=
+     `<div class="inv-row"><span>Creation fee${rush?' (incl. rush)':''}</span><span>${money(creation)}</span></div>`
+    +`<div class="inv-row"><span>Licensing fee (+${use}%)</span><span>${money(licensing)}</span></div>`
+    +`<div class="inv-total"><span>Total quote</span><span class="bignum">${money(total)}</span></div>`
+    +`<div style="font-size:12px;color:var(--muted);margin-top:8px">Suggested deposit (50%): <b>${money(total*0.5)}</b></div>`;
+}
+function showTab(view){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  const tb=document.querySelector('.tab[data-view="'+view+'"]');if(tb)tb.classList.add('active');
+  ['leads','grants','pipeline','outreach','money','pitch'].forEach(v=>document.getElementById(v).style.display='none');
+  document.getElementById(view).style.display='';
+}
+function useInInvoice(){
+  if(!_rate.total)calcRate();
+  document.getElementById('i_l1a').value=Math.round(_rate.creation);
+  document.getElementById('i_l2a').value=Math.round(_rate.licensing);
+  showTab('money');
+  document.querySelectorAll('.subtab2').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.subtab2[data-sub2="invoicePanel"]').classList.add('active');
+  document.getElementById('ratePanel').style.display='none';
+  document.getElementById('invoicePanel').style.display='';
+  setInvoiceDefaults();renderInvTracker();
+}
+function useInContract(){
+  if(!_rate.total)calcRate();
+  document.getElementById('c_fee').value=Math.round(_rate.total);
+  document.getElementById('c_deposit').value=50;
+  showTab('pitch');
+  document.querySelectorAll('.subtab').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.subtab[data-sub="contractPanel"]').classList.add('active');
+  document.getElementById('pitchPanel').style.display='none';
+  document.getElementById('contractPanel').style.display='';
+}
+
+function setInvoiceDefaults(){
+  const numEl=document.getElementById('i_num');
+  if(numEl&&!numEl.value){
+    const n=(JSON.parse(localStorage.getItem('jlc_invoices')||'[]').length)+1;
+    numEl.value='INV-'+String(n).padStart(4,'0');
+  }
+  const dEl=document.getElementById('i_date');
+  if(dEl&&!dEl.value)dEl.value=new Date().toISOString().slice(0,10);
+}
+function invoiceData(){
+  const g=id=>document.getElementById(id).value.trim();
+  const l1=+document.getElementById('i_l1a').value||0;
+  const l2=+document.getElementById('i_l2a').value||0;
+  const l3=+document.getElementById('i_l3a').value||0;
+  const dep=+document.getElementById('i_dep').value||0;
+  const sub=l1+l2+l3, due=sub-dep;
+  return {from:g('i_from'),frommail:g('i_frommail'),to:g('i_to'),tomail:g('i_tomail'),
+    num:g('i_num'),date:g('i_date'),duedate:g('i_due'),
+    l1d:g('i_l1d'),l1,l2d:g('i_l2d'),l2,l3d:g('i_l3d'),l3,dep,sub,due,pay:g('i_pay')};
+}
+function invoiceHTML(d){
+  const row=(label,amt)=>(label||amt)?`<div class="inv-row"><span>${label||''}</span><span>${money(amt)}</span></div>`:'';
+  return `<div class="inv-preview">
+    <h2>INVOICE</h2>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">${d.num||''}${d.date?' · '+d.date:''}${d.duedate?' · due '+d.duedate:''}</div>
+    <div style="display:flex;justify-content:space-between;gap:16px;margin-bottom:14px;font-size:12.5px">
+      <div><b>From</b><br>${d.from||''}<br>${d.frommail||''}</div>
+      <div style="text-align:right"><b>Bill to</b><br>${d.to||''}<br>${d.tomail||''}</div>
+    </div>
+    ${row(d.l1d,d.l1)}${row(d.l2d,d.l2)}${(d.l3||d.l3d)?row(d.l3d,d.l3):''}
+    <div class="inv-row"><span>Subtotal</span><span>${money(d.sub)}</span></div>
+    ${d.dep?`<div class="inv-row"><span>Deposit paid</span><span>−${money(d.dep)}</span></div>`:''}
+    <div class="inv-total"><span>Amount due</span><span class="bignum">${money(d.due)}</span></div>
+    ${d.pay?`<div style="font-size:12px;color:var(--muted);margin-top:12px"><b>Payment:</b> ${d.pay}</div>`:''}
+  </div>`;
+}
+function previewInvoice(){document.getElementById('invoiceOut').innerHTML=invoiceHTML(invoiceData());}
+function printInvoice(){
+  const d=invoiceData();
+  const w=window.open('','_blank');
+  if(!w){document.getElementById('iStatus').textContent='Allow pop-ups to print, or Preview then use your browser\'s print.';return;}
+  const R=(l,a)=>(l||a)?`<div class="row"><span>${l||''}</span><span>${money(a)}</span></div>`:'';
+  w.document.write(`<html><head><title>${d.num||'Invoice'}</title><style>
+    body{font-family:-apple-system,Helvetica,Arial,sans-serif;color:#2b2320;max-width:640px;margin:40px auto;padding:0 24px}
+    h2{font-size:26px;margin:0 0 2px} .muted{color:#8a7f76;font-size:13px}
+    .row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #ece4d8}
+    .total{display:flex;justify-content:space-between;padding:12px 0;font-weight:700;font-size:18px}
+    .head{display:flex;justify-content:space-between;gap:20px;margin:16px 0 20px;font-size:13px}
+  </style></head><body>
+    <h2>INVOICE</h2>
+    <div class="muted">${d.num||''}${d.date?' · '+d.date:''}${d.duedate?' · due '+d.duedate:''}</div>
+    <div class="head"><div><b>From</b><br>${d.from||''}<br>${d.frommail||''}</div>
+    <div style="text-align:right"><b>Bill to</b><br>${d.to||''}<br>${d.tomail||''}</div></div>
+    ${R(d.l1d,d.l1)}${R(d.l2d,d.l2)}${R(d.l3d,d.l3)}
+    <div class="row"><span>Subtotal</span><span>${money(d.sub)}</span></div>
+    ${d.dep?`<div class="row"><span>Deposit paid</span><span>−${money(d.dep)}</span></div>`:''}
+    <div class="total"><span>Amount due</span><span>${money(d.due)}</span></div>
+    ${d.pay?`<div class="muted" style="margin-top:16px"><b>Payment:</b> ${d.pay}</div>`:''}
+  </body></html>`);
+  w.document.close();setTimeout(()=>{try{w.print();}catch(e){}},400);
+}
+function saveInvoice(){
+  const d=invoiceData();
+  if(!d.to&&!d.num){document.getElementById('iStatus').textContent='Add at least a client or invoice number first.';return;}
+  const list=JSON.parse(localStorage.getItem('jlc_invoices')||'[]');
+  list.push({id:Date.now(),num:d.num,to:d.to,due:d.due,duedate:d.duedate,status:'unpaid'});
+  localStorage.setItem('jlc_invoices',JSON.stringify(list));
+  document.getElementById('iStatus').textContent='Saved to tracker.';
+  document.getElementById('i_num').value='';setInvoiceDefaults();renderInvTracker();
+}
+function renderInvTracker(){
+  const el=document.getElementById('invTracker');if(!el)return;
+  const list=JSON.parse(localStorage.getItem('jlc_invoices')||'[]');
+  if(!list.length){el.innerHTML='';return;}
+  let outstanding=0,paid=0;
+  list.forEach(v=>{v.status==='paid'?paid+=(+v.due||0):outstanding+=(+v.due||0);});
+  el.innerHTML=`<div class="updated" style="margin:0 0 10px">Outstanding: <b>${money(outstanding)}</b> · Paid: <b>${money(paid)}</b></div>`
+   + list.slice().reverse().map(v=>`<div class="crmcard">
+      <div class="top">
+        <div><div class="nm">${v.num||'(no #)'} — ${v.to||'client'}</div>
+          <div class="sub">${money(+v.due||0)}${v.duedate?' · due '+v.duedate:''}</div></div>
+        <span class="badge ${v.status}">${v.status==='paid'?'Paid':'Unpaid'}</span>
+      </div>
+      <div class="foot">
+        <button class="mini" onclick="toggleInvoice(${v.id})">Mark ${v.status==='paid'?'unpaid':'paid'}</button>
+        <button class="mini" onclick="deleteInvoice(${v.id})">Delete</button>
+      </div></div>`).join('');
+}
+function toggleInvoice(id){
+  const list=JSON.parse(localStorage.getItem('jlc_invoices')||'[]');
+  const v=list.find(x=>x.id===id);if(v)v.status=v.status==='paid'?'unpaid':'paid';
+  localStorage.setItem('jlc_invoices',JSON.stringify(list));renderInvTracker();
+}
+function deleteInvoice(id){
+  localStorage.setItem('jlc_invoices',JSON.stringify(JSON.parse(localStorage.getItem('jlc_invoices')||'[]').filter(x=>x.id!==id)));
+  renderInvTracker();
+}
+
+// ---- Outreach / follow-up tracker ----
+const CKEY='jlc_contacts';
+const loadContacts=()=>JSON.parse(localStorage.getItem(CKEY)||'[]');
+const saveContacts=a=>localStorage.setItem(CKEY,JSON.stringify(a));
+function saveContact(){
+  const g=id=>document.getElementById(id).value.trim();
+  const name=g('o_name');
+  if(!name){document.getElementById('oStatus').textContent='Add a name first.';return;}
+  const cadence=+document.getElementById('o_cadence').value;
+  const status=document.getElementById('o_status').value;
+  const editid=document.getElementById('o_editid').value;
+  let list=loadContacts();
+  const existing=editid?list.find(x=>x.id===+editid):null;
+  const contacted=status!=='To contact';
+  const rec={id:editid?+editid:Date.now(),name,co:g('o_co'),contact:g('o_contact'),notes:g('o_notes'),status,cadence};
+  rec.last=contacted?((existing&&existing.last)?existing.last:new Date().toISOString()):(existing?existing.last:null);
+  rec.next=(cadence&&rec.last)?new Date(new Date(rec.last).getTime()+cadence*86400000).toISOString():null;
+  if(editid){list=list.map(x=>x.id===+editid?rec:x);}else{list.push(rec);}
+  saveContacts(list);
+  ['o_name','o_co','o_contact','o_notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('o_editid').value='';
+  document.getElementById('oStatus').textContent='Saved.';
+  renderContacts();
+}
+function logOutreach(id){
+  const list=loadContacts();const c=list.find(x=>x.id===id);if(!c)return;
+  c.last=new Date().toISOString();
+  if(c.status==='To contact')c.status='Contacted';
+  c.next=c.cadence?new Date(Date.now()+c.cadence*86400000).toISOString():null;
+  saveContacts(list);renderContacts();
+}
+function editContact(id){
+  const c=loadContacts().find(x=>x.id===id);if(!c)return;
+  document.getElementById('o_name').value=c.name||'';
+  document.getElementById('o_co').value=c.co||'';
+  document.getElementById('o_contact').value=c.contact||'';
+  document.getElementById('o_notes').value=c.notes||'';
+  document.getElementById('o_status').value=c.status||'To contact';
+  document.getElementById('o_cadence').value=String(c.cadence||0);
+  document.getElementById('o_editid').value=c.id;
+  document.getElementById('oStatus').textContent='Editing — Save to update.';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function deleteContact(id){saveContacts(loadContacts().filter(x=>x.id!==id));renderContacts();}
+function renderContacts(){
+  const list=loadContacts();
+  const wrap=document.getElementById('oList');if(!wrap)return;
+  const today=new Date();today.setHours(0,0,0,0);
+  const active=x=>x.status!=='Won'&&x.status!=='Passed'&&x.cadence&&x.next;
+  let due=0;list.forEach(x=>{if(active(x)&&new Date(x.next)<=today)due++;});
+  document.getElementById('oSummary').innerHTML=list.length
+    ?(due?`<b style="color:var(--brand-dk)">${due} follow-up${due>1?'s':''} due</b> · ${list.length} contacts`:`All caught up · ${list.length} contacts`)
+    :'No contacts yet — add the art directors and studios you want to reach.';
+  const sorted=list.slice().sort((a,b)=>((a.next?new Date(a.next).getTime():Infinity)-(b.next?new Date(b.next).getTime():Infinity)));
+  wrap.innerHTML=sorted.map(c=>{
+    let flag='';
+    if(active(c)){
+      const nx=new Date(c.next);nx.setHours(0,0,0,0);
+      const d=Math.round((nx-today)/86400000);
+      if(d<0)flag=`<span class="badge due">Overdue ${-d}d</span>`;
+      else if(d===0)flag=`<span class="badge due">Due today</span>`;
+      else flag=`<span class="badge ok">Follow up in ${d}d</span>`;
+    }
+    return `<div class="crmcard">
+      <div class="top">
+        <div><div class="nm">${c.name}${c.co?' — <span style="font-weight:400;color:var(--muted)">'+c.co+'</span>':''}</div>
+          <div class="sub">${c.contact||''}${c.notes?' · '+c.notes:''}</div></div>
+        <span class="badge">${c.status}</span>
+      </div>
+      ${flag?`<div style="margin-top:8px">${flag}</div>`:''}
+      <div class="foot">
+        <button class="mini" onclick="logOutreach(${c.id})">Log outreach today</button>
+        <button class="mini" onclick="editContact(${c.id})">Edit</button>
+        <button class="mini" onclick="deleteContact(${c.id})">Delete</button>
+      </div></div>`;
+  }).join('');
+}
+
+renderCards();renderGrants();genPitch();updateRefreshLabels();renderContacts();setInvoiceDefaults();renderInvTracker();
 
 // Register service worker for offline / installable app
 if('serviceWorker' in navigator){
