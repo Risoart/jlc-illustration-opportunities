@@ -83,6 +83,20 @@
   .panel input,.panel select,.panel textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:13.5px}
   textarea.out{width:100%;min-height:340px;border:1px solid var(--line);border-radius:12px;padding:16px;font-family:inherit;font-size:14px;line-height:1.65;resize:vertical}
   .note{font-size:12px;color:var(--muted);background:#f6f0e6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:16px}
+  /* contracts */
+  .subtabs{display:flex;gap:6px;margin-bottom:16px}
+  .subtab{padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:700;color:var(--muted)}
+  .subtab.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .toggle-rights{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-top:5px}
+  .toggle-rights button{flex:1;padding:9px;background:#fff;border:none;cursor:pointer;font-size:12px;font-weight:700;color:var(--muted)}
+  .toggle-rights button.on{background:var(--ink);color:#fff}
+  .aibox{border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px;background:#fffdf9}
+  .aibox label{margin-top:10px}
+  .aibox label:first-of-type{margin-top:0}
+  .disc{font-size:11.5px;color:var(--muted);background:#f6f0e6;border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin-top:12px}
+  .status{font-size:12px;color:var(--muted);margin-top:10px;min-height:16px}
+  .spinner{display:inline-block;width:13px;height:13px;border:2px solid var(--muted);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes spin{to{transform:rotate(360deg)}}
   @media(max-width:760px){.pitchgrid{grid-template-columns:1fr}.pipe{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -100,7 +114,7 @@
     <div class="tab active" data-view="leads">Client Work</div>
     <div class="tab" data-view="grants">Grants &amp; Funding</div>
     <div class="tab" data-view="pipeline">My Pipeline</div>
-    <div class="tab" data-view="pitch">Pitch Drafter</div>
+    <div class="tab" data-view="pitch">Pitch &amp; Contracts</div>
   </div>
 
   <!-- OPPORTUNITIES -->
@@ -155,26 +169,86 @@
     </div>
   </section>
 
-  <!-- PITCH -->
+  <!-- PITCH & CONTRACTS -->
   <section id="pitch" style="display:none">
-    <div class="pitchgrid">
-      <div class="panel">
-        <label>Your name</label><input id="p_name" value="Riso">
-        <label>Portfolio link</label><input id="p_folio" placeholder="yourportfolio.com">
-        <label>Client / author name</label><input id="p_client" placeholder="e.g. Sarah">
-        <label>Project (what they need)</label><input id="p_proj" placeholder="a 24-page picture book about a shy dragon">
-        <label>Your style in a few words</label><input id="p_style" value="warm, whimsical watercolor with soft linework">
-        <label>Tone</label>
-        <select id="p_tone">
-          <option>Warm & friendly</option>
-          <option>Polished & professional</option>
-          <option>Short & punchy</option>
-        </select>
-        <button class="btn primary" style="margin-top:16px" onclick="genPitch()">Generate pitch</button>
+    <div class="subtabs">
+      <div class="subtab active" data-sub="pitchPanel">Pitch email</div>
+      <div class="subtab" data-sub="contractPanel">Contract</div>
+    </div>
+
+    <!-- Pitch email -->
+    <div id="pitchPanel">
+      <div class="pitchgrid">
+        <div class="panel">
+          <label>Your name</label><input id="p_name" value="Riso">
+          <label>Portfolio link</label><input id="p_folio" placeholder="yourportfolio.com">
+          <label>Client / author name</label><input id="p_client" placeholder="e.g. Sarah">
+          <label>Project (what they need)</label><input id="p_proj" placeholder="a 24-page picture book about a shy dragon">
+          <label>Your style in a few words</label><input id="p_style" value="warm, whimsical watercolor with soft linework">
+          <label>Tone</label>
+          <select id="p_tone">
+            <option>Warm & friendly</option>
+            <option>Polished & professional</option>
+            <option>Short & punchy</option>
+          </select>
+          <button class="btn primary" style="margin-top:16px" onclick="genPitch()">Generate pitch</button>
+        </div>
+        <div>
+          <textarea class="out" id="pitchOut"></textarea>
+          <button class="btn" style="margin-top:10px;max-width:180px" onclick="copyPitch()">Copy to clipboard</button>
+        </div>
       </div>
-      <div>
-        <textarea class="out" id="pitchOut"></textarea>
-        <button class="btn" style="margin-top:10px;max-width:180px" onclick="copyPitch()">Copy to clipboard</button>
+    </div>
+
+    <!-- Contract -->
+    <div id="contractPanel" style="display:none">
+      <div class="pitchgrid">
+        <div class="panel">
+          <div class="aibox">
+            <label>Anthropic API key <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional — for in-app AI)</span></label>
+            <input id="ai_key" type="password" placeholder="sk-ant-…" autocomplete="off">
+            <label>Model</label>
+            <input id="ai_model" placeholder="claude-sonnet-5">
+            <div style="font-size:11px;color:var(--muted);margin-top:7px">Your key is saved only in this browser, never in the app's code. No key? Use <b>Draft via claude.ai</b> below — it's free.</div>
+          </div>
+
+          <label>Illustrator (you)</label><input id="c_artist" value="Riso">
+          <label>Client / company</label><input id="c_client" placeholder="e.g. Bright Owl Books">
+          <label>Project</label><input id="c_project" placeholder="24-page picture book, 'The Shy Dragon'">
+          <label>Deliverables</label><input id="c_deliverables" placeholder="cover + 12 interior spreads, print-ready">
+          <label>Concepts included</label><input id="c_concepts" placeholder="2">
+          <label>Revision rounds included</label><input id="c_revisions" placeholder="2">
+          <label>Total fee</label><input id="c_fee" placeholder="4000">
+          <label>Currency</label><input id="c_currency" value="USD">
+          <label>Deposit upfront (%)</label><input id="c_deposit" placeholder="50">
+          <label>Payment terms</label><input id="c_payterms" placeholder="balance on delivery, net 14">
+          <label>Start date</label><input id="c_start" placeholder="e.g. Aug 1, 2026">
+          <label>Final delivery date</label><input id="c_deadline" placeholder="e.g. Nov 15, 2026">
+          <label>Cancellation / kill fee</label><input id="c_kill" placeholder="deposit non-refundable; 50% of balance after sketch approval">
+          <label>Rights model</label>
+          <div class="toggle-rights">
+            <button type="button" id="rights_license" class="on" onclick="setRights('license')">License (you keep copyright)</button>
+            <button type="button" id="rights_wfh" onclick="setRights('wfh')">Work-for-hire (client owns)</button>
+          </div>
+          <label>Artist credit</label><input id="c_credit" placeholder="Credited as illustrator on cover & copyright page">
+          <label>Expenses</label><input id="c_expenses" placeholder="pre-approved expenses billed to client">
+          <label>Governing law (state / country)</label><input id="c_law" placeholder="e.g. California, USA">
+          <label>Additional terms</label><input id="c_extra" placeholder="anything else…">
+
+          <div style="display:flex;gap:8px;margin-top:16px">
+            <button class="btn primary" onclick="generateContract()">Generate with Claude</button>
+            <button class="btn" onclick="handoffContract()">Draft via claude.ai</button>
+          </div>
+          <div id="cStatus" class="status"></div>
+          <div class="disc"><b>Not legal advice.</b> This produces a draft template to start from. For high-value or unusual jobs, have a lawyer review before signing.</div>
+        </div>
+        <div>
+          <textarea class="out" id="contractOut" placeholder="Your drafted contract will appear here."></textarea>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" style="max-width:150px" onclick="copyContract()">Copy</button>
+            <button class="btn" style="max-width:150px" onclick="downloadContract()">Download .txt</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -404,6 +478,106 @@ function genPitch(){
 }
 const v=id=>document.getElementById(id).value.trim();
 function copyPitch(){const o=document.getElementById('pitchOut');o.select();document.execCommand('copy');}
+
+// ---- Contracts ----
+// inner sub-tabs (Pitch email / Contract)
+document.querySelectorAll('.subtab').forEach(s=>s.onclick=()=>{
+  document.querySelectorAll('.subtab').forEach(x=>x.classList.remove('active'));
+  s.classList.add('active');
+  document.getElementById('pitchPanel').style.display   = s.dataset.sub==='pitchPanel'?'':'none';
+  document.getElementById('contractPanel').style.display= s.dataset.sub==='contractPanel'?'':'none';
+});
+
+let _rights='license';
+function setRights(r){
+  _rights=r;
+  document.getElementById('rights_license').classList.toggle('on',r==='license');
+  document.getElementById('rights_wfh').classList.toggle('on',r==='wfh');
+}
+
+function buildContractPrompt(){
+  const g=id=>document.getElementById(id).value.trim();
+  const rightsText = _rights==='wfh'
+    ? 'Work-for-hire: upon full payment the client owns all rights to the final artwork. The illustrator retains the right to display the work in their portfolio and for self-promotion.'
+    : 'License: the illustrator retains copyright and ownership of the original artwork, and upon full payment grants the client a license to use the work for the agreed purpose. Any use beyond that scope is negotiated separately.';
+  return `You are helping a freelance illustrator draft a clear, fair, professional illustration contract. Write a complete, ready-to-sign agreement based on the details below. Use plain English, number the sections, and include signature blocks for both parties. End with one short line noting this is a template and not legal advice.
+
+Details:
+- Illustrator: ${g('c_artist')||'[Illustrator name]'}
+- Client: ${g('c_client')||'[Client name / company]'}
+- Project: ${g('c_project')||'[Project description]'}
+- Deliverables: ${g('c_deliverables')||'[deliverables]'}
+- Concepts included: ${g('c_concepts')||'[number]'}
+- Revision rounds included: ${g('c_revisions')||'[number]'}
+- Total fee: ${g('c_fee')||'[amount]'} ${g('c_currency')||'USD'}
+- Deposit required upfront: ${g('c_deposit')||'[percent]'}%
+- Payment terms: ${g('c_payterms')||'[terms]'}
+- Start date: ${g('c_start')||'[date]'}
+- Final delivery date: ${g('c_deadline')||'[date]'}
+- Cancellation / kill fee: ${g('c_kill')||'[terms]'}
+- Rights: ${rightsText}
+- Artist credit: ${g('c_credit')||'Illustrator to receive customary credit.'}
+- Expenses: ${g('c_expenses')||'Pre-approved expenses billed to client.'}
+- Governing law: ${g('c_law')||'[state / country]'}
+- Additional terms: ${g('c_extra')||'None'}
+
+Include the standard clauses an illustrator should have: parties & scope, deliverables, fees & payment schedule, revisions & additional work, deadlines & delays, cancellation/kill fee, ownership & licensing (reflecting the rights model above), artist credit, portfolio/self-promotion rights, confidentiality, indemnity/liability, and termination. Keep it concise and readable — aim for a document a small client would happily sign.`;
+}
+
+async function generateContract(){
+  const status=document.getElementById('cStatus');
+  const key=document.getElementById('ai_key').value.trim();
+  const model=document.getElementById('ai_model').value.trim()||'claude-sonnet-5';
+  if(!key){status.innerHTML='No API key entered. Use <b>Draft via claude.ai</b> (free), or paste an Anthropic key above for in-app drafting.';return;}
+  localStorage.setItem('jlc_anthropic_key',key);
+  localStorage.setItem('jlc_model',model);
+  status.innerHTML='<span class="spinner"></span>Drafting your contract with Claude…';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'content-type':'application/json',
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({model:model,max_tokens:2500,messages:[{role:'user',content:buildContractPrompt()}]})
+    });
+    if(!res.ok){
+      let msg=res.status+' '+res.statusText;
+      try{const e=await res.json();if(e.error&&e.error.message)msg=e.error.message;}catch(_){}
+      throw new Error(msg);
+    }
+    const data=await res.json();
+    const text=(data.content&&data.content[0]&&data.content[0].text)||'(No text returned)';
+    document.getElementById('contractOut').value=text;
+    status.textContent='Draft ready — review and edit before sending.';
+  }catch(err){
+    status.innerHTML='Couldn’t reach Claude ('+err.message+'). Check the key/model, or use <b>Draft via claude.ai</b> instead.';
+  }
+}
+
+function handoffContract(){
+  const prompt=buildContractPrompt();
+  const done=()=>{document.getElementById('cStatus').textContent='Prompt copied. claude.ai is opening — paste it into the chat to get your contract.';window.open('https://claude.ai/new','_blank','noopener');};
+  const fallback=()=>{document.getElementById('contractOut').value=prompt;document.getElementById('cStatus').textContent='Copy the prompt from the box on the right and paste it into claude.ai.';window.open('https://claude.ai/new','_blank','noopener');};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(prompt).then(done,fallback);}else{fallback();}
+}
+
+function copyContract(){const o=document.getElementById('contractOut');if(!o.value)o.value=buildContractPrompt();o.select();document.execCommand('copy');}
+function downloadContract(){
+  const txt=document.getElementById('contractOut').value||buildContractPrompt();
+  const blob=new Blob([txt],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='illustration-contract.txt';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(a.href);
+}
+
+// restore saved AI settings
+(function(){
+  const k=localStorage.getItem('jlc_anthropic_key');if(k)document.getElementById('ai_key').value=k;
+  document.getElementById('ai_model').value=localStorage.getItem('jlc_model')||'claude-sonnet-5';
+})();
 
 renderCards();renderGrants();genPitch();
 
