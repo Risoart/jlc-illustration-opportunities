@@ -1,5 +1,5 @@
 // Simple offline cache for JLC Illustration Opportunities
-const CACHE = 'jlc-opps-v5';
+const CACHE = 'jlc-opps-v6';
 const ASSETS = [
   './',
   './index.html',

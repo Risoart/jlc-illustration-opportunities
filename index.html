@@ -249,8 +249,30 @@
     <div id="ratePanel">
       <div class="pitchgrid">
         <div class="panel">
-          <label>Your day rate ($)</label><input id="r_day" type="number" value="800">
-          <label>Days of work</label><input id="r_days" type="number" value="3">
+          <label>How are you charging?</label>
+          <select id="r_model" onchange="switchModel()">
+            <option value="hourly">Hourly</option>
+            <option value="daily" selected>Daily</option>
+            <option value="project">Project-based (flat fee)</option>
+            <option value="contract">Contract / retainer (ongoing)</option>
+          </select>
+
+          <div id="grp_hourly" style="display:none">
+            <label>Hourly rate ($)</label><input id="r_rate" type="number" value="75">
+            <label>Estimated hours</label><input id="r_hours" type="number" value="30">
+          </div>
+          <div id="grp_daily">
+            <label>Day rate ($)</label><input id="r_day" type="number" value="800">
+            <label>Days of work</label><input id="r_days" type="number" value="3">
+          </div>
+          <div id="grp_project" style="display:none">
+            <label>Flat project fee ($)</label><input id="r_proj" type="number" value="2500">
+          </div>
+          <div id="grp_contract" style="display:none">
+            <label>Monthly retainer ($)</label><input id="r_month" type="number" value="1500">
+            <label>Length (months)</label><input id="r_months" type="number" value="3">
+          </div>
+
           <label>Licensing / usage</label>
           <select id="r_use">
             <option value="0">None — personal use only</option>
@@ -262,7 +284,7 @@
           <label>Rush job?</label>
           <select id="r_rush"><option value="0">No</option><option value="25">Yes (+25%)</option></select>
           <button class="btn primary" style="margin-top:14px" onclick="calcRate()">Calculate</button>
-          <div class="disc">Guide rates: editorial spot <b>$150–600</b> · commercial/advertising <b>$1,000–10,000+</b> · mid-career day rate <b>$600–1,200</b>. Always quote creation and licensing as separate line items.</div>
+          <div class="disc">Guide rates: hourly <b>$25–150+</b> · mid-career day rate <b>$600–1,200</b> · editorial spot <b>$150–600</b> · commercial/advertising <b>$1,000–10,000+</b>. Always quote creation and licensing as separate line items.</div>
         </div>
         <div>
           <div id="rateOut" class="panel"><span style="color:var(--muted);font-size:13px">Enter your numbers and hit Calculate.</span></div>
@@ -959,19 +981,30 @@ function downloadContract(){
 const money=n=>'$'+Math.round(+n||0).toLocaleString();
 let _rate={creation:0,licensing:0,total:0};
 
+function switchModel(){
+  const m=document.getElementById('r_model').value;
+  ['hourly','daily','project','contract'].forEach(k=>{
+    document.getElementById('grp_'+k).style.display = (k===m)?'':'none';
+  });
+}
 function calcRate(){
-  const day=+document.getElementById('r_day').value||0;
-  const days=+document.getElementById('r_days').value||0;
-  const use=+document.getElementById('r_use').value||0;
-  const rush=+document.getElementById('r_rush').value||0;
-  let creation=day*days;
+  const val=id=>+document.getElementById(id).value||0;
+  const model=document.getElementById('r_model').value;
+  const use=val('r_use');
+  const rush=val('r_rush');
+  let creation=0, basis='';
+  if(model==='hourly'){creation=val('r_rate')*val('r_hours'); basis=`${money(val('r_rate'))}/hr × ${val('r_hours')} hrs`;}
+  else if(model==='daily'){creation=val('r_day')*val('r_days'); basis=`${money(val('r_day'))}/day × ${val('r_days')} days`;}
+  else if(model==='project'){creation=val('r_proj'); basis='Flat project fee';}
+  else if(model==='contract'){creation=val('r_month')*val('r_months'); basis=`${money(val('r_month'))}/mo × ${val('r_months')} mo`;}
   if(rush)creation*=(1+rush/100);
   const licensing=creation*(use/100);
   const total=creation+licensing;
   _rate={creation,licensing,total};
   document.getElementById('rateOut').innerHTML=
-     `<div class="inv-row"><span>Creation fee${rush?' (incl. rush)':''}</span><span>${money(creation)}</span></div>`
-    +`<div class="inv-row"><span>Licensing fee (+${use}%)</span><span>${money(licensing)}</span></div>`
+     `<div style="font-size:11.5px;color:var(--muted);margin-bottom:6px">${basis}${rush?' · +'+rush+'% rush':''}</div>`
+    +`<div class="inv-row"><span>Creation fee${rush?' (incl. rush)':''}</span><span>${money(creation)}</span></div>`
+    +(use?`<div class="inv-row"><span>Licensing fee (+${use}%)</span><span>${money(licensing)}</span></div>`:'')
     +`<div class="inv-total"><span>Total quote</span><span class="bignum">${money(total)}</span></div>`
     +`<div style="font-size:12px;color:var(--muted);margin-top:8px">Suggested deposit (50%): <b>${money(total*0.5)}</b></div>`;
 }
