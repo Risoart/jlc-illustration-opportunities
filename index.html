@@ -97,6 +97,15 @@
   .status{font-size:12px;color:var(--muted);margin-top:10px;min-height:16px}
   .spinner{display:inline-block;width:13px;height:13px;border:2px solid var(--muted);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:6px}
   @keyframes spin{to{transform:rotate(360deg)}}
+  /* refresh + pagination */
+  .refreshbtn{padding:9px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+  .refreshbtn:hover{background:#f3ece0}
+  .updated{font-size:11.5px;color:var(--muted);margin:-6px 0 14px 2px}
+  .pager{display:flex;align-items:center;justify-content:center;gap:14px;margin:24px 0 4px}
+  .pager button{padding:8px 15px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;font-weight:700;font-size:13px;color:var(--ink)}
+  .pager button:hover:not(:disabled){background:#f3ece0}
+  .pager button:disabled{opacity:.4;cursor:default}
+  .pager .pinfo{font-size:12.5px;color:var(--muted);min-width:96px;text-align:center}
   @media(max-width:760px){.pitchgrid{grid-template-columns:1fr}.pipe{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -120,8 +129,8 @@
   <!-- OPPORTUNITIES -->
   <section id="leads">
     <div class="note">
-      Each card links straight to a <b>live, filtered feed</b> of current children's-book illustration gigs on that platform.
-      Click <b>View live gigs</b> to open real postings, or <b>Save</b> to track it in your pipeline.
+      Each card links to a <b>live feed</b> of current illustration gigs on that platform — those feeds refresh daily, so the newest postings are always one click away.
+      Hit <b>Refresh</b> to re-check and pull the latest directory. <b>Save</b> any source to track it in your pipeline.
     </div>
     <div class="toolbar">
       <select id="typeFilter">
@@ -132,9 +141,12 @@
         <option value="contest">Contests, awards & exposure</option>
       </select>
       <input type="text" id="search" placeholder="Search sources…">
+      <button class="refreshbtn" onclick="refreshData('leads')">↻ Refresh</button>
       <span class="count" id="count"></span>
     </div>
+    <div class="updated" id="leadUpdated"></div>
     <div class="grid" id="cards"></div>
+    <div class="pager" id="leadPager"></div>
   </section>
 
   <!-- GRANTS -->
@@ -153,9 +165,12 @@
         <option value="listing">Opportunity listings</option>
       </select>
       <input type="text" id="grantSearch" placeholder="Search grants…">
+      <button class="refreshbtn" onclick="refreshData('grants')">↻ Refresh</button>
       <span class="count" id="grantCount"></span>
     </div>
+    <div class="updated" id="grantUpdated"></div>
     <div class="grid" id="grantCards"></div>
+    <div class="pager" id="grantPager"></div>
   </section>
 
   <!-- PIPELINE -->
@@ -308,6 +323,86 @@ const LEADS = [
    d:"The biggest global kidlit event. Illustrators Annual + exhibition puts you in front of publishers worldwide.",
    meta:[["Scope","Global"],["Type","Exhibition"]],
    url:"https://www.scbwi.org/"},
+  {t:"Upwork — All illustration jobs", type:"market",
+   d:"The full illustration feed beyond kidlit: editorial, commercial, character, packaging. 2,000+ live postings, filter by budget and type.",
+   meta:[["Volume","2,000+"],["Scope","All illustration"]],
+   url:"https://www.upwork.com/freelance-jobs/illustration/"},
+  {t:"PeoplePerHour — Editorial illustration", type:"market",
+   d:"Steady stream of editorial and commercial illustration briefs. Send proposals; UK/EU-heavy but global.",
+   meta:[["Focus","Editorial"],["Model","Proposals"]],
+   url:"https://www.peopleperhour.com/freelance-editorial-illustration-jobs"},
+  {t:"Freelancer.com — All illustration", type:"market",
+   d:"Broad illustration project feed across every style and industry. Contest and fixed-bid work.",
+   meta:[["Volume","High"],["Scope","All illustration"]],
+   url:"https://www.freelancer.com/jobs/illustration"},
+  {t:"Fiverr Pro — Editorial illustration", type:"market",
+   d:"Productized editorial/commercial packages. Good for inbound once your Pro gigs rank.",
+   meta:[["Model","Packages"],["Focus","Editorial"]],
+   url:"https://www.fiverr.com/hire/editorial-illustrations"},
+  {t:"Contra — Illustration freelance", type:"market",
+   d:"Commission-free freelance marketplace. Build a profile, get matched to illustration projects, keep 100% of your rate.",
+   meta:[["Fee","0% commission"],["Model","Profile"]],
+   url:"https://contra.com/hire/illustrators"},
+  {t:"Dribbble — Illustration jobs", type:"direct",
+   d:"Detailed full-time and freelance illustration briefs from studios and brands worldwide. Filter by speciality and contract type.",
+   meta:[["Type","Jobs board"],["Filter","Remote/onsite"]],
+   url:"https://dribbble.com/illustration-jobs"},
+  {t:"Behance — Job list", type:"direct",
+   d:"Adobe's creative job board, globally diverse. Filter by creative field and freelance vs full-time. Clients also scout portfolios here.",
+   meta:[["Reach","Global"],["Owner","Adobe"]],
+   url:"https://www.behance.net/joblist"},
+  {t:"ArtStation — Jobs (remote)", type:"direct",
+   d:"Game studios, tabletop and entertainment companies hiring illustrators. Strong for character, concept, and cover work.",
+   meta:[["Focus","Games/entertainment"],["Remote","Yes"]],
+   url:"https://www.artstation.com/jobs/all?work_remotely=true"},
+  {t:"Working Nomads — Remote illustration", type:"direct",
+   d:"Curated remote illustration roles aggregated from companies hiring worldwide. Email alerts available.",
+   meta:[["Remote","Only"],["Alerts","Yes"]],
+   url:"https://www.workingnomads.com/remote-illustration-jobs"},
+  {t:"We Work Remotely — Design & illustration", type:"direct",
+   d:"High-traffic remote job board. Design/illustration category has contract and full-time creative roles.",
+   meta:[["Remote","Only"],["Traffic","High"]],
+   url:"https://weworkremotely.com/categories/remote-design-jobs"},
+  {t:"Coroflot — Design & illustration jobs", type:"direct",
+   d:"20+ year creative job board connecting studios and brands with illustrators and designers.",
+   meta:[["Type","Jobs board"],["Age","20+ yrs"]],
+   url:"https://www.coroflot.com/design-jobs"},
+  {t:"Working Not Working — Creative network", type:"community",
+   d:"Invite-style community where top brands and agencies hire freelance creatives, illustration included. Portfolio-forward.",
+   meta:[["Type","Community"],["Clients","Brands/agencies"]],
+   url:"https://workingnotworking.com/"},
+  {t:"The Dots — Creative jobs (UK/global)", type:"community",
+   d:"'LinkedIn for creatives.' Illustration briefs and roles, strong UK presence with global reach.",
+   meta:[["Region","UK/global"],["Type","Network"]],
+   url:"https://the-dots.com/"},
+  {t:"AOI — Association of Illustrators", type:"community",
+   d:"UK professional body: jobs board, pricing guidance, contracts, and the World Illustration Awards. Great for editorial/commercial illustrators.",
+   meta:[["Type","Membership"],["Value","Jobs+advice"]],
+   url:"https://theaoi.com/"},
+  {t:"Directory of Illustration", type:"direct",
+   d:"Long-running promotional directory art directors browse to commission illustrators. Paid listing puts you in front of buyers.",
+   meta:[["Audience","Art directors"],["Model","Listing"]],
+   url:"https://www.directoryofillustration.com/"},
+  {t:"Illustration agencies list (Creative Howl)", type:"direct",
+   d:"46+ illustration & kidlit agencies with submission info. Getting repped means an agent finds clients for you.",
+   meta:[["Count","46+ agencies"],["Path","Representation"]],
+   url:"https://creativehowl.com/illustration-agencies-list/"},
+  {t:"Children's Book Council (CBC)", type:"community",
+   d:"Trade association of US children's publishers — member directory and resources to find who's publishing what.",
+   meta:[["Focus","Kidlit"],["Type","Publishers"]],
+   url:"https://www.cbcbooks.org/"},
+  {t:"Reddit — r/HungryArtists commissions", type:"community",
+   d:"Active board where clients post paid art & illustration commissions directly. Free, direct-to-client.",
+   meta:[["Cost","Free"],["Client","Direct"]],
+   url:"https://www.reddit.com/r/HungryArtists/"},
+  {t:"LinkedIn — All illustration jobs", type:"direct",
+   d:"Broad illustration search across publishers, agencies, studios, and in-house teams. Set alerts and reach art directors directly.",
+   meta:[["Volume","Large"],["Best for","Direct outreach"]],
+   url:"https://www.linkedin.com/jobs/illustration-jobs"},
+  {t:"Indeed — All illustrator jobs", type:"direct",
+   d:"Aggregated illustrator roles (staff + freelance) across industries. Set an email alert for new postings.",
+   meta:[["Type","Aggregator"],["Alerts","Yes"]],
+   url:"https://www.indeed.com/q-illustrator-jobs.html"},
 ];
 
 const GRANTS = [
@@ -363,6 +458,98 @@ const GRANTS = [
    d:"Directory of residencies and fellowship funding, with fee-waiver and stipend info to plan applications.",
    meta:[["Type","Directory"],["Focus","Residencies"]],
    url:"https://artistcommunities.org/funding-fees-fellowships"},
+  {t:"NYSCA/NYFA Artist Fellowship", type:"fellowship",
+   d:"$8,000 unrestricted cash grant for New York State artists, rotating across disciplines (drawing/printmaking included). Free to apply.",
+   meta:[["Award","$8,000"],["Region","New York State"]],
+   url:"https://www.nyfa.org/awards-grants/nysca-nyfa-artist-fellowship/"},
+  {t:"Foundation for Contemporary Arts — Grants to Artists", type:"grant",
+   d:"$45,000 unrestricted grants to individual artists across disciplines, including visual arts. By nomination.",
+   meta:[["Award","$45,000"],["Basis","Nomination"]],
+   url:"https://www.foundationforcontemporaryarts.org/grants/grants-to-artists/"},
+  {t:"FCA — Emergency Grants", type:"emergency",
+   d:"Fast, one-time grants for artists with sudden, unexpected opportunities or urgent needs tied to a specific project.",
+   meta:[["Type","Emergency"],["Turnaround","Fast"]],
+   url:"https://www.foundationforcontemporaryarts.org/grants/emergency-grants/"},
+  {t:"Anonymous Was A Woman", type:"grant",
+   d:"$50,000 unrestricted grants for women, trans, and gender-nonconforming artists over 40 at a critical career point.",
+   meta:[["Award","$50,000"],["For","Women/TGNC 40+"]],
+   url:"https://www.anonymouswasawoman.org/"},
+  {t:"Puffin Foundation — Annual Artist Grant", type:"grant",
+   d:"Grants up to $3,500 for artists whose work is often under-supported due to its social or political content. US residents.",
+   meta:[["Award","up to $3,500"],["Region","US"]],
+   url:"https://www.puffinfoundation.org/"},
+  {t:"Awesome Foundation — Micro-grants", type:"grant",
+   d:"$1,000 no-strings micro-grants awarded monthly by local chapters for bold, creative projects. Very light application.",
+   meta:[["Award","$1,000"],["Cadence","Monthly"]],
+   url:"https://www.awesomefoundation.org/en"},
+  {t:"Helen Frankenthaler Foundation — Grants", type:"grant",
+   d:"Foundation supporting visual artists and arts organizations through several grant initiatives. Check current open programs.",
+   meta:[["Funder","Foundation"],["Focus","Visual arts"]],
+   url:"https://www.frankenthalerfoundation.org/grants"},
+  {t:"World Illustration Awards (AOI)", type:"award",
+   d:"Global illustration prize with 10 categories and New Talent track. Overall winners receive £2K and £1K cash. Huge exposure.",
+   meta:[["Prize","£2K / £1K"],["Scope","Global"]],
+   url:"https://worldillustrationawards.com/"},
+  {t:"Communication Arts — Illustration Competition", type:"award",
+   d:"The most prestigious illustration competition. Winners featured worldwide in the Illustration Annual (print + digital).",
+   meta:[["Prestige","Top-tier"],["Reward","Annual feature"]],
+   url:"https://www.commarts.com/competition/2026-illustration"},
+  {t:"3x3 International Illustration Show", type:"award",
+   d:"Rigorously juried international show for commissioned, non-commissioned and personal work. Strong for editorial illustrators.",
+   meta:[["Type","Juried show"],["Scope","International"]],
+   url:"https://3x3mag.com/"},
+  {t:"Society of Illustrators — Annual competitions", type:"award",
+   d:"The historic US illustration body. Annual juried exhibitions and awards; submissions typically open in the fall.",
+   meta:[["Body","Historic US"],["Type","Exhibitions"]],
+   url:"https://societyillustrators.org/"},
+  {t:"American Illustration (AI-AP)", type:"award",
+   d:"Selective annual showcasing the year's best commissioned and personal illustration. Chosen work goes in the archive buyers browse.",
+   meta:[["Type","Annual"],["Audience","Art buyers"]],
+   url:"https://www.ai-ap.com/"},
+  {t:"California Arts Council — Grants", type:"grant",
+   d:"State funding programs, including support for individual artists. Most states have an equivalent — check yours.",
+   meta:[["Region","California"],["Funder","State"]],
+   url:"https://arts.ca.gov/grants/grant-programs/"},
+  {t:"New York State Council on the Arts — Support for Artists", type:"grant",
+   d:"State grants and programs supporting individual artists across New York. Regrant partners statewide.",
+   meta:[["Region","New York"],["Funder","State"]],
+   url:"https://arts.ny.gov/funding-areas/support-artists"},
+  {t:"Maryland State Arts Council — Grants for Artists", type:"grant",
+   d:"Independent Artist Awards and grants for MD-based creators. A model for what many state councils offer.",
+   meta:[["Region","Maryland"],["Funder","State"]],
+   url:"https://msac.org/programs/grants-artists"},
+  {t:"Find your state/country arts agency (NASAA)", type:"listing",
+   d:"Directory of every US state & jurisdiction arts agency — most offer individual-artist grants. Start local, competition is lighter.",
+   meta:[["Type","Directory"],["Tip","Apply local"]],
+   url:"https://nasaa-arts.org/state-arts-agencies/list-of-state-arts-agencies/"},
+  {t:"NEA — Grants hub", type:"listing",
+   d:"National Endowment for the Arts overview of all federal grant programs and deadlines across disciplines.",
+   meta:[["Funder","Federal"],["Type","Hub"]],
+   url:"https://www.arts.gov/grants"},
+  {t:"Interlace Fund — Relief Grants", type:"emergency",
+   d:"Ongoing emergency relief for visual artists facing eviction, utility shut-off, healthcare and other urgent needs.",
+   meta:[["Type","Relief"],["Cadence","Monthly"]],
+   url:"https://www.interlacefund.org/relief-grants"},
+  {t:"LACE — Lightning Fund", type:"grant",
+   d:"Rapid artist grants supporting experimental and time-sensitive projects. Light, fast application.",
+   meta:[["Type","Rapid"],["Focus","Experimental"]],
+   url:"https://welcometolace.org/lightning-fund/"},
+  {t:"BOMB Magazine — Fellowships & Residencies list", type:"listing",
+   d:"Curated running list of fellowships and residencies open to artists and writers. Refreshed regularly.",
+   meta:[["Type","List"],["Update","Ongoing"]],
+   url:"https://bombmagazine.org/discover/fellowships-residencies/"},
+  {t:"ArtConnect — Grants & fully-funded residencies", type:"listing",
+   d:"Searchable global board of grants, stipends and fully-funded residencies, filterable by type and discipline.",
+   meta:[["Type","Board"],["Scope","Global"]],
+   url:"https://www.artconnect.com/opportunities/grant-or-stipend"},
+  {t:"Graphic Competitions — Illustration", type:"listing",
+   d:"Aggregated illustration competitions and open calls worldwide with deadlines and prize details.",
+   meta:[["Type","Aggregator"],["Focus","Competitions"]],
+   url:"https://graphiccompetitions.com/illustration/"},
+  {t:"artdeadline.com — Grants", type:"listing",
+   d:"Veteran listing of art opportunities filtered to grants — a deep, frequently-updated well of deadlines.",
+   meta:[["Type","Aggregator"],["Depth","Large"]],
+   url:"https://artdeadline.com/ops-type/type-grants/"},
 ];
 
 const KEY="jlc_pipeline_v1";
@@ -373,12 +560,30 @@ let pipeline=load();
 const labels={market:"Marketplace",community:"Community",direct:"Publisher / direct",contest:"Exposure",
   grant:"Project grant",fellowship:"Fellowship",residency:"Residency",emergency:"Emergency relief",listing:"Opportunity list"};
 
+const PAGE_SIZE=9;
+let leadPage=0, grantPage=0;
+
+function renderPager(id,page,total,kind){
+  const el=document.getElementById(id);
+  if(total<=1){el.innerHTML='';return;}
+  el.innerHTML=`<button ${page<=0?'disabled':''} onclick="gotoPage('${kind}',${page-1})">← Prev</button>`
+    +`<span class="pinfo">Page ${page+1} of ${total}</span>`
+    +`<button ${page>=total-1?'disabled':''} onclick="gotoPage('${kind}',${page+1})">Next →</button>`;
+}
+function gotoPage(kind,p){
+  if(kind==='leads'){leadPage=p;renderCards();}else{grantPage=p;renderGrants();}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
 function renderCards(){
   const type=document.getElementById('typeFilter').value;
   const q=document.getElementById('search').value.toLowerCase();
   const box=document.getElementById('cards');
-  const list=LEADS.filter(l=>(type==='all'||l.type===type)&&(l.t.toLowerCase().includes(q)||l.d.toLowerCase().includes(q)));
-  document.getElementById('count').textContent=list.length+" sources";
+  const all=LEADS.filter(l=>(type==='all'||l.type===type)&&(l.t.toLowerCase().includes(q)||l.d.toLowerCase().includes(q)));
+  const total=Math.max(1,Math.ceil(all.length/PAGE_SIZE));
+  if(leadPage>=total)leadPage=0;
+  const list=all.slice(leadPage*PAGE_SIZE,leadPage*PAGE_SIZE+PAGE_SIZE);
+  document.getElementById('count').textContent=all.length+" sources";
   box.innerHTML=list.map(l=>{
     const key="L"+LEADS.indexOf(l);
     const isSaved=!!pipeline[key];
@@ -393,14 +598,18 @@ function renderCards(){
       </div>
     </div>`;
   }).join('') || '<div class="empty">No sources match that filter.</div>';
+  renderPager('leadPager',leadPage,total,'leads');
 }
 
 function renderGrants(){
   const type=document.getElementById('grantFilter').value;
   const q=document.getElementById('grantSearch').value.toLowerCase();
   const box=document.getElementById('grantCards');
-  const list=GRANTS.filter(g=>(type==='all'||g.type===type)&&(g.t.toLowerCase().includes(q)||g.d.toLowerCase().includes(q)));
-  document.getElementById('grantCount').textContent=list.length+" opportunities";
+  const all=GRANTS.filter(g=>(type==='all'||g.type===type)&&(g.t.toLowerCase().includes(q)||g.d.toLowerCase().includes(q)));
+  const total=Math.max(1,Math.ceil(all.length/PAGE_SIZE));
+  if(grantPage>=total)grantPage=0;
+  const list=all.slice(grantPage*PAGE_SIZE,grantPage*PAGE_SIZE+PAGE_SIZE);
+  document.getElementById('grantCount').textContent=all.length+" opportunities";
   box.innerHTML=list.map(g=>{
     const key="G"+GRANTS.indexOf(g);
     const isSaved=!!pipeline[key];
@@ -415,8 +624,33 @@ function renderGrants(){
       </div>
     </div>`;
   }).join('') || '<div class="empty">No opportunities match that filter.</div>';
+  renderPager('grantPager',grantPage,total,'grants');
 }
 const esc=s=>s.replace(/'/g,"\\'");
+
+// Refresh: re-check for the newest app version and re-render, with a timestamp.
+function refreshData(which){
+  const el=document.getElementById(which==='leads'?'leadUpdated':'grantUpdated');
+  if(el)el.textContent='Checking for new opportunities…';
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.update())).catch(()=>{});
+  }
+  localStorage.setItem('jlc_last_refresh',new Date().toISOString());
+  setTimeout(()=>{
+    if(which==='leads'){leadPage=0;renderCards();}else{grantPage=0;renderGrants();}
+    updateRefreshLabels();
+  },500);
+}
+function updateRefreshLabels(){
+  const iso=localStorage.getItem('jlc_last_refresh');
+  let txt='Live feeds update daily — tap a card to see the newest postings.';
+  if(iso){
+    const d=new Date(iso);
+    txt='Last refreshed '+d.toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})+' · live feeds update daily.';
+  }
+  const a=document.getElementById('leadUpdated');if(a)a.textContent=txt;
+  const b=document.getElementById('grantUpdated');if(b)b.textContent=txt;
+}
 
 function toggleSave(key,title,url){
   if(pipeline[key]){delete pipeline[key];}
@@ -457,10 +691,10 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   if(t.dataset.view==='pipeline')renderPipe();
   if(t.dataset.view==='grants')renderGrants();
 });
-document.getElementById('typeFilter').onchange=renderCards;
-document.getElementById('search').oninput=renderCards;
-document.getElementById('grantFilter').onchange=renderGrants;
-document.getElementById('grantSearch').oninput=renderGrants;
+document.getElementById('typeFilter').onchange=()=>{leadPage=0;renderCards();};
+document.getElementById('search').oninput=()=>{leadPage=0;renderCards();};
+document.getElementById('grantFilter').onchange=()=>{grantPage=0;renderGrants();};
+document.getElementById('grantSearch').oninput=()=>{grantPage=0;renderGrants();};
 
 // pitch
 function genPitch(){
@@ -579,7 +813,7 @@ function downloadContract(){
   document.getElementById('ai_model').value=localStorage.getItem('jlc_model')||'claude-sonnet-5';
 })();
 
-renderCards();renderGrants();genPitch();
+renderCards();renderGrants();genPitch();updateRefreshLabels();
 
 // Register service worker for offline / installable app
 if('serviceWorker' in navigator){
